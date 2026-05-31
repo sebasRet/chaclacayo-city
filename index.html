@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Chaclacayo City</title>
+    <meta name="author" content="LUCKY STAR GAMES">
+    <meta property="og:site_name" content="LUCKY STAR GAMES">
+    <meta name="description" content="Simulación urbana interactiva de alta fidelidad. Explora el entorno digital desarrollado por LUCKY STAR GAMES.">
+
+    <link rel="icon" type="image/png" href="LSlogo.png">
+    
+    <style>
+        /* VARIABLES DE DISEÑO ESTILO APPLE */
+        :root {
+            --bg-pure-black: #000000;
+            --bg-dark-gray: #161617;
+            --bg-card: rgba(22, 22, 23, 0.7);
+            --text-white: #f5f5f7;
+            --text-gray: #86868b;
+            --apple-blue: #2997ff;
+            --border-radius-large: 24px;
+            --border-radius-medium: 14px;
+            --font-stack: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        /* CONFIGURACIÓN BASE REQUERIDA */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-stack);
+            background-color: var(--bg-pure-black);
+            color: var(--text-white);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* 1. BARRA DE NAVEGACIÓN CON EFECTO VIDRIO (GLASSMORPHISM) */
+        .apple-nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: 48px;
+            background: rgba(0, 0, 0, 0.48);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .nav-container {
+            width: 100%;
+            max-width: 1024px;
+            padding: 0 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            font-weight: 500;
+            font-size: 14px;
+            letter-spacing: -0.01em;
+            color: var(--text-white);
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 24px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            font-size: 12px;
+            color: var(--text-gray);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-white);
+        }
+
+        .nav-btn {
+            background-color: var(--text-white);
+            color: var(--bg-pure-black);
+            font-size: 12px;
+            font-weight: 500;
+            padding: 4px 12px;
+            border-radius: 12px;
+            text-decoration: none;
+            transition: opacity 0.2s ease;
+        }
+
+        .nav-btn:hover {
+            opacity: 0.9;
+        }
+
+        /* 2. SECCIÓN HERO (PRESENTACIÓN CON ANIMACIÓN DE ENTRADA) */
+        .hero-section {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 20px;
+            position: relative;
+        }
+
+        .hero-title {
+            font-size: 56px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 12px;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: appleFadeInUp 1s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+            animation-delay: 0.2s;
+        }
+
+        .hero-subtitle {
+            font-size: 21px;
+            color: var(--text-gray);
+            max-width: 600px;
+            margin-bottom: 40px;
+            line-height: 1.38;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: appleFadeInUp 1s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+            animation-delay: 0.4s;
+        }
+
+        .hero-asset-container {
+            width: 100%;
+            max-width: 850px;
+            height: 400px;
+            background: #09090a;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--border-radius-large);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-gray);
+            font-style: italic;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            transform: scale(0.9) translateY(40px);
+            animation: appleAssetIntro 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+            animation-delay: 0.6s;
+            overflow: hidden;
+        }
+
+        /* 3. BENTO GRID (CUADRÍCULA DE SECCIONES PRESTIGIO) */
+        .grid-section {
+            max-width: 1024px;
+            margin: 0 auto;
+            padding: 120px 22px;
+        }
+
+        .section-label {
+            color: var(--apple-blue);
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 20px;
+            margin-top: 24px;
+        }
+
+        .bento-card {
+            background: var(--bg-dark-gray);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: var(--border-radius-large);
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 320px;
+            transition: transform 0.4s ease, border-color 0.4s ease;
+        }
+
+        .bento-card:hover {
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .card-large {
+            grid-row: span 2;
+        }
+
+        .bento-card h3 {
+            font-size: 28px;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            margin-bottom: 12px;
+        }
+
+        .bento-card p {
+            color: var(--text-gray);
+            font-size: 16px;
+            line-height: 1.47;
+        }
+
+        .card-asset-placeholder {
+            width: 100%;
+            height: 160px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px dashed rgba(255, 255, 255, 0.1);
+            border-radius: var(--border-radius-medium);
+            margin-top: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 13px;
+            color: #424245;
+        }
+
+        /* 4. DEVLOG SECTION (NARRATIVA LIMPIA) */
+        .devlog-section {
+            background-color: #0a0a0c;
+            padding: 100px 22px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .devlog-container {
+            width: 100%;
+            max-width: 680px;
+        }
+
+        .log-entry {
+            margin-bottom: 80px;
+        }
+
+        .log-meta {
+            font-size: 14px;
+            color: var(--apple-blue);
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .log-entry h4 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .log-entry p {
+            color: #d2d2d7;
+            font-size: 17px;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .code-box {
+            background: var(--bg-pure-black);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--border-radius-medium);
+            padding: 18px;
+            font-family: SFMono-Regular, Consolas, Menlo, monospace;
+            font-size: 13px;
+            color: #a1a1a6;
+            line-height: 1.6;
+            overflow-x: auto;
+        }
+
+        /* 5. FOOTER CON BOTÓN LLAMATIVO */
+        .premium-footer {
+            padding: 140px 22px;
+            text-align: center;
+            background: linear-gradient(to top, #09090a, var(--bg-pure-black));
+        }
+
+        .footer-title {
+            font-size: 40px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 8px;
+        }
+
+        .footer-subtitle {
+            color: var(--text-gray);
+            font-size: 17px;
+            margin-bottom: 32px;
+        }
+
+        .action-btn {
+            background-color: var(--text-white);
+            color: var(--bg-pure-black);
+            font-size: 17px;
+            font-weight: 600;
+            padding: 12px 32px;
+            border-radius: 24px;
+            text-decoration: none;
+            display: inline-block;
+            transition: transform 0.2s ease, opacity 0.2s ease;
+        }
+
+        .action-btn:hover {
+            transform: scale(1.02);
+            opacity: 0.95;
+        }
+
+        /* KEYFRAMES ANIMACIONES */
+        @keyframes appleFadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes appleAssetIntro {
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .grid-container { grid-template-columns: 1fr; }
+            .hero-title { font-size: 38px; }
+            .hero-subtitle { font-size: 17px; }
+            .bento-card { padding: 24px; }
+            .nav-links { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="apple-nav">
+        <div class="nav-container">
+            <a href="#" class="nav-logo">Chaclacayo City</a>
+            <ul class="nav-links">
+                <li><a href="#inicio">Inicio</a></li>
+                <li><a href="#caracteristicas">Simulación</a></li>
+                <li><a href="#devlog">DevLog</a></li>
+            </ul>
+            <a href="roblox://placeId=107005692109033" class="nav-btn">Probar</a>
+        </div>
+    </nav>
+
+    <section class="hero-section" id="inicio">
+        <h1 class="hero-title">Chaclacayo. Rediseñado bit a bit.</h1>
+        <p class="hero-subtitle">Una simulación urbana interactiva de alta fidelidad construida sobre código sólido, físicas calibradas y un respeto absoluto por la infraestructura real.</p>
+        
+        <div class="hero-asset-container">
+            [ Espacio reservado para Render 3D / Video Presentación en Movimiento ]
+        </div>
+    </section>
+
+    <section class="grid-section" id="caracteristicas">
+        <span class="section-label">Arquitectura del Entorno</span>
+        <div class="grid-container">
+            
+            <div class="bento-card card-large">
+                <div>
+                    <h3>Físicas al límite.</h3>
+                    <p>Calibración milimétrica. El comportamiento vehicular ha sido programado desde cero para responder al relieve exacto de las avenidas y curvas de la zona.</p>
+                </div>
+                <div class="card-asset-placeholder">
+                    [ Animación en bucle: Scripts de Físicas + Chasis ]
+                </div>
+            </div>
+
+            <div class="bento-card">
+                <div>
+                    <h3>Entorno gemelo.</h3>
+                    <p>Cada calle, fachada y punto emblemático de la zona modelado a escala para conservar la atmósfera real.</p>
+                </div>
+                <div class="card-asset-placeholder">
+                    [ Control interactivo: Foto Real vs Simulador ]
+                </div>
+            </div>
+
+            <div class="bento-card">
+                <div>
+                    <h3>Visión Smart City.</h3>
+                    <p>El futuro de la gestión urbana. Pruebas conceptuales de flujos de tránsito y simulación de cámaras de seguridad integradas en tiempo real.</p>
+                </div>
+                <div class="card-asset-placeholder">
+                    [ Interfaz de Monitoreo Municipal ]
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="devlog-section" id="devlog">
+        <div class="devlog-container">
+            <span class="section-label" style="text-align: center; margin-bottom: 40px;">Cuaderno de Desarrollo</span>
+            
+            <div class="log-entry">
+                <div class="log-meta">Hito 1 · Modelado y Geometría</div>
+                <h4>La escala del entorno real</h4>
+                <p>Para construir una réplica fiel, extraemos proporciones de mapas y datos fotográficos urbanos, estableciendo una equivalencia métrica estable en el motor de renderizado. Cada intersección respeta los ángulos reales del distrito.</p>
+            </div>
+
+            <div class="log-entry">
+                <div class="log-meta">Hito 2 · Optimización de Scripts</div>
+                <h4>Arquitectura de alto rendimiento</h4>
+                <p>El código corre de manera limpia en cualquier plataforma mediante técnicas de carga por proximidad (StreamingEnabled) y recolección inteligente de basura de subprocesos huérfanos.</p>
+                <div class="code-box">
+-- Inicialización de rendimiento modular
+local DebrisService = game:GetService("Debris")
+local function optimizarEntorno(distancia)
+    -- Lógica nativa de renderizado dinámico para Chaclacayo City
+end
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="premium-footer" id="descarga">
+        <h2 class="footer-title">Entra a la simulación.</h2>
+        <p class="footer-subtitle">Disponible para pruebas técnicas y evaluación de entornos interactivos.</p>
+        <a href="https://www.roblox.com/es/games/107005692109033/Chaclacayo-City" class="action-btn">Iniciar Simulación</a>
+    </footer>
+
+</body>
+</html>
